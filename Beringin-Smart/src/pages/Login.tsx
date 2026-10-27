@@ -2,30 +2,28 @@ import React, { useState, useEffect } from 'react';
 import {
   IonContent,
   IonPage,
-  IonInput,
-  IonButton,
   IonCard,
   IonCardContent,
+  IonInput,
+  IonButton,
+  IonIcon,
   IonToast,
   IonSpinner,
-  IonIcon,
 } from '@ionic/react';
 import {
   mailOutline,
   lockClosedOutline,
-  shieldCheckmarkOutline,
-  sparklesOutline,
   arrowForwardOutline,
+  shieldCheckmarkOutline,
 } from 'ionicons/icons';
-import API from '../services/api';
+import api from '../services/api';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // Jika sudah memiliki sesi login, langsung arahkan ke Home
   useEffect(() => {
     if (localStorage.getItem('token')) {
       window.location.href = '/home';
@@ -35,14 +33,15 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
+
+    if (!email || !password) {
+      setErrorMessage('Harap isi alamat email dan kata sandi Anda!');
+      return;
+    }
+
     setLoading(true);
-
     try {
-      const response = await API.post('/login', {
-        email,
-        password,
-      });
-
+      const response = await api.post('/login', { email, password });
       if (response.data && response.data.token) {
         const resolvedRole = response.data.role || response.data.user?.role || 'siswa';
         localStorage.setItem('token', response.data.token);
@@ -50,15 +49,17 @@ const Login: React.FC = () => {
         localStorage.setItem('user', JSON.stringify(response.data.user));
         window.location.href = '/home';
       } else {
-        setErrorMessage('Gagal memproses sesi login!');
+        setErrorMessage('Format respon server tidak valid.');
       }
-      setLoading(false);
-    } catch (error: any) {
-      if (error.response && error.response.data && error.response.data.message) {
-        setErrorMessage(error.response.data.message);
+    } catch (err: any) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setErrorMessage(err.response.data.message);
+      } else if (err.response && err.response.status === 401) {
+        setErrorMessage('Kombinasi email dan kata sandi salah!');
       } else {
-        setErrorMessage('Gagal terhubung ke server Laravel! Pastikan server aktif.');
+        setErrorMessage('Gagal terhubung ke server backend.');
       }
+    } finally {
       setLoading(false);
     }
   };
@@ -80,75 +81,59 @@ const Login: React.FC = () => {
         } as React.CSSProperties}
       >
         <div style={{ maxWidth: '440px', margin: '40px auto 20px auto' }}>
-          {/* Logo & Hero Branding */}
+          {/* Header Brand dengan Logo Sekolah Lingkaran Bercahaya */}
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             <div
               style={{
-                width: '74px',
-                height: '74px',
+                width: '88px',
+                height: '88px',
                 margin: '0 auto 16px auto',
-                background: 'linear-gradient(135deg, #a78bfa 0%, #15803d 100%)',
-                borderRadius: '22px',
+                background: '#ffffff',
+                borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 12px 28px rgba(124, 58, 237, 0.45)',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
+                padding: '10px',
+                boxShadow: '0 0 28px rgba(34, 197, 94, 0.45)',
+                border: '3px solid #86efac',
               }}
             >
-              <IonIcon icon={sparklesOutline} style={{ fontSize: '2.4rem', color: '#ffffff' }} />
+              <img
+                src="/logo-smkn1beringin.png"
+                alt="Logo SMKN 1 Beringin"
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
             </div>
-
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '5px 16px',
-                background: 'rgba(167, 139, 250, 0.18)',
-                border: '1px solid rgba(233, 213, 255, 0.35)',
-                borderRadius: '9999px',
-                color: '#e9d5ff',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                letterSpacing: '0.8px',
-                textTransform: 'uppercase',
-                marginBottom: '10px',
-              }}
-            >
-              <IonIcon icon={shieldCheckmarkOutline} /> SMKN 1 BERINGIN • PPLG
-            </div>
-
             <h1
               style={{
                 margin: '0 0 6px 0',
-                fontSize: '2rem',
-                fontWeight: 900,
+                fontSize: '1.9rem',
+                fontWeight: 800,
                 color: '#ffffff',
-                letterSpacing: '-0.4px',
+                letterSpacing: '-0.5px',
                 fontFamily: "'Outfit', sans-serif",
               }}
             >
               Beringin Smart
             </h1>
-            <p style={{ margin: 0, color: '#e9d5ff', fontSize: '0.92rem', opacity: 0.95 }}>
+            <p style={{ margin: 0, color: '#bbf7d0', fontSize: '0.92rem', fontWeight: 500 }}>
               Portal Pengaduan Sarana & Prasarana • Nurul Husna Edition
             </p>
           </div>
 
-          {/* Login Card */}
+          {/* Login Card dengan Aksen Botanical Sage */}
           <IonCard
             style={{
               margin: 0,
-              borderRadius: '24px',
-              background: 'rgba(255, 255, 255, 0.98)',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.45)',
-              border: '1px solid rgba(255, 255, 255, 0.8)',
+              borderRadius: '26px',
+              background: '#ffffff',
+              boxShadow: '0 20px 50px -10px rgba(5, 46, 22, 0.45)',
+              border: '2px solid #bbf7d0',
               overflow: 'hidden',
             }}
           >
             <IonCardContent style={{ padding: '30px 24px' }}>
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '18px' }}>
                 <h2
                   style={{
                     margin: '0 0 4px 0',
@@ -160,14 +145,14 @@ const Login: React.FC = () => {
                 >
                   Selamat Datang
                 </h2>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b' }}>
-                  Silakan masuk menggunakan akun terdaftar Anda
+                <p style={{ margin: 0, fontSize: '0.85rem', color: '#6b7280' }}>
+                  Masuk menggunakan akun portal sarpras terdaftar
                 </p>
               </div>
 
-              {/* Quick Fill Demo Pills */}
+              {/* Quick Fill Pills */}
               <div style={{ marginBottom: '18px' }}>
-                <span style={{ fontSize: '0.74rem', color: '#166534', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                <span style={{ fontSize: '0.72rem', color: '#15803d', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
                   AKUN UJI COBA CEPAT:
                 </span>
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -175,13 +160,13 @@ const Login: React.FC = () => {
                     type="button"
                     onClick={() => setPresetUser('husna@beringin.sch.id')}
                     style={{
-                      background: 'rgba(21, 128, 61, 0.1)',
-                      border: '1px solid rgba(187, 247, 208, 0.9)',
-                      borderRadius: '9999px',
-                      padding: '4px 10px',
+                      background: '#f0fdf4',
+                      border: '1px solid #86efac',
+                      borderRadius: '20px',
+                      padding: '5px 12px',
                       fontSize: '0.74rem',
                       fontWeight: 700,
-                      color: '#166534',
+                      color: '#15803d',
                       cursor: 'pointer',
                     }}
                   >
@@ -193,47 +178,38 @@ const Login: React.FC = () => {
                     style={{
                       background: '#fffbeb',
                       border: '1px solid #fde68a',
-                      borderRadius: '9999px',
-                      padding: '4px 10px',
+                      borderRadius: '20px',
+                      padding: '5px 12px',
                       fontSize: '0.74rem',
                       fontWeight: 700,
                       color: '#b45309',
                       cursor: 'pointer',
                     }}
                   >
-                    🛡️ Pak Zulkifli (Petugas)
+                    🛠️ Pak Zulkifli (Petugas)
                   </button>
                   <button
                     type="button"
                     onClick={() => setPresetUser('siswa@beringin.sch.id')}
                     style={{
-                      background: '#f8fafc',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '9999px',
-                      padding: '4px 10px',
+                      background: '#f9fafb',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '20px',
+                      padding: '5px 12px',
                       fontSize: '0.74rem',
                       fontWeight: 600,
-                      color: '#475569',
+                      color: '#4b5563',
                       cursor: 'pointer',
                     }}
                   >
-                    👥 Muhammad (Umum)
+                    👤 M. Rizki (Umum)
                   </button>
                 </div>
               </div>
 
               <form onSubmit={handleLogin}>
-                {/* Email Input */}
                 <div style={{ marginBottom: '16px' }}>
-                  <label
-                    style={{
-                      display: 'block',
-                      marginBottom: '6px',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      color: '#334155',
-                    }}
-                  >
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.82rem', fontWeight: 600, color: '#14532d' }}>
                     Alamat Email
                   </label>
                   <div
@@ -241,9 +217,9 @@ const Login: React.FC = () => {
                       display: 'flex',
                       alignItems: 'center',
                       background: '#f0fdf4',
-                      border: '1.5px solid rgba(187, 247, 208, 0.9)',
-                      borderRadius: '14px',
-                      padding: '0 12px',
+                      border: '1.5px solid #bbf7d0',
+                      borderRadius: '16px',
+                      padding: '0 14px',
                     }}
                   >
                     <IonIcon icon={mailOutline} style={{ fontSize: '1.2rem', color: '#15803d', marginRight: '8px' }} />
@@ -258,17 +234,8 @@ const Login: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Password Input */}
-                <div style={{ marginBottom: '24px' }}>
-                  <label
-                    style={{
-                      display: 'block',
-                      marginBottom: '6px',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      color: '#334155',
-                    }}
-                  >
+                <div style={{ marginBottom: '22px' }}>
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.82rem', fontWeight: 600, color: '#14532d' }}>
                     Kata Sandi
                   </label>
                   <div
@@ -276,9 +243,9 @@ const Login: React.FC = () => {
                       display: 'flex',
                       alignItems: 'center',
                       background: '#f0fdf4',
-                      border: '1.5px solid rgba(187, 247, 208, 0.9)',
-                      borderRadius: '14px',
-                      padding: '0 12px',
+                      border: '1.5px solid #bbf7d0',
+                      borderRadius: '16px',
+                      padding: '0 14px',
                     }}
                   >
                     <IonIcon icon={lockClosedOutline} style={{ fontSize: '1.2rem', color: '#15803d', marginRight: '8px' }} />
@@ -293,7 +260,6 @@ const Login: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Submit Button */}
                 <IonButton
                   expand="block"
                   type="submit"
@@ -302,8 +268,8 @@ const Login: React.FC = () => {
                     height: '50px',
                     margin: 0,
                     '--background': 'linear-gradient(135deg, #15803d 0%, #166534 100%)',
-                    '--border-radius': '9999px',
-                    '--box-shadow': '0 10px 20px rgba(124, 58, 237, 0.35)',
+                    '--border-radius': '20px',
+                    '--box-shadow': '0 10px 22px rgba(21, 128, 61, 0.4)',
                     fontWeight: 700,
                     fontSize: '0.95rem',
                   }}
@@ -320,10 +286,9 @@ const Login: React.FC = () => {
             </IonCardContent>
           </IonCard>
 
-          {/* Footer note */}
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <span style={{ fontSize: '0.78rem', color: '#e9d5ff', opacity: 0.9 }}>
-              © 2026-2027 SMK Negeri 1 Beringin • Nurul Husna (XI PPLG 1) • SKKNI No. 282/2016
+            <span style={{ fontSize: '0.78rem', color: '#bbf7d0' }}>
+              © 2026-2027 SMK Negeri 1 Beringin • Nurul Husna (XI PPLG 2) • SKKNI No. 282/2016
             </span>
           </div>
         </div>
