@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 2. Akun Siswa Utama
-        $siswa_utama = User::create([
+        $siswa = User::create([
             'name' => 'Nurul Husna (XI PPLG 2)',
             'email' => 'husna@beringin.sch.id',
             'password' => Hash::make('password123'),
@@ -28,44 +28,57 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 3. Akun Siswa Pendukung
-        $siswa_pendukung = User::create([
-            'name' => 'Muhammad Rizki (XI PPLG 1)',
+        $teman = User::create([
+            'name' => 'M. Rizki (Siswa XI PPLG 2)',
             'email' => 'siswa@beringin.sch.id',
             'password' => Hash::make('password123'),
             'role' => 'siswa',
         ]);
 
         // 4. Data Awal Laporan Pengaduan Sarpras (Edisi Husna)
-        
         Laporan::create([
-            'user_id' => $siswa_utama->id,
-            'judul' => 'Plafon Asbes Selasar Depan Ruang Tata Usaha Bolong',
-            'deskripsi' => 'Plafon asbes jebol terkena rembesan air talang dan serpihannya berisiko jatuh menimpa orang lewat.',
-            'lokasi' => 'Selasar Depan Kantor TU',
-            'kategori' => 'Lingkungan Sekolah',
-            'foto' => null,
-            'status' => 'diproses',
+            'user_id' => $siswa->id,
+            'nama' => 'Proyektor Ruang Multimedia Gambar Bergaris Kuning',
+            'lokasi' => 'Ruang Multimedia, Lantai 2',
+            'kategori' => 'Laboratorium',
+            'deskripsi' => 'Proyektor gantung menampilkan garis-garis artefak warna kuning tebal saat menampilkan slide presentasi.',
+            'status' => 'Sedang Diproses',
         ]);
 
         Laporan::create([
-            'user_id' => $siswa_pendukung->id,
-            'judul' => 'AC Ruang Lab Jaringan Tidak Dingin & Bocor Air',
-            'deskripsi' => 'Unit AC indoor meneteskan air ke lantai dan suhu ruangan tetap panas saat praktikum server.',
-            'lokasi' => 'Lab Jaringan Komputer Gedung C',
-            'kategori' => 'Lab & Bengkel',
-            'foto' => null,
-            'status' => 'selesai',
+            'user_id' => $teman->id,
+            'nama' => 'Pintu Kamar Mandi Siswa Blok Barat Rusak Slotnya',
+            'lokasi' => 'Toilet Siswa Lantai 1 Sayap Barat',
+            'kategori' => 'Lingkungan/Taman',
+            'deskripsi' => 'Kunci slot gerendel pintu toilet nomor 3 patah sehingga tidak bisa dikunci dari dalam oleh siswa.',
+            'status' => 'Menunggu',
         ]);
 
         Laporan::create([
-            'user_id' => $siswa_utama->id,
-            'judul' => 'Kran Tempat Cuci Tangan Musholla Guru Patah',
-            'deskripsi' => 'Kran air bagian kiri patah di pangkal drat pipa sehingga air menyemprot tidak terkontrol.',
-            'lokasi' => 'Musholla Al-Ikhlas SMKN 1',
-            'kategori' => 'Fasilitas Umum',
-            'foto' => null,
-            'status' => 'menunggu',
+            'user_id' => $siswa->id,
+            'nama' => 'Kursi Guru Ruang Teori 3 Patah Sandarannya',
+            'lokasi' => 'Ruang Kelas XI PPLG 2',
+            'kategori' => 'Fasilitas Kelas',
+            'deskripsi' => 'Sandaran kursi busa guru retak pada sambungan besi bawah sehingga berbahaya jika diduduki.',
+            'status' => 'Selesai',
         ]);
 
+        Laporan::create([
+            'user_id' => $teman->id,
+            'nama' => 'Kabel Access Point WiFi Koridor Terjuntai Turun',
+            'lokasi' => 'Plafon Lorong Perpustakaan',
+            'kategori' => 'Lingkungan/Taman',
+            'deskripsi' => 'Kabel UTP patch cord router access point lepas dari klem dinding dan menggantung rendah.',
+            'status' => 'Sedang Diproses',
+        ]);
+
+        Laporan::create([
+            'user_id' => $siswa->id,
+            'nama' => 'Papan Tulis Whiteboard Retak di Bagian Sudut',
+            'lokasi' => 'Ruang Belajar Teori 3',
+            'kategori' => 'Fasilitas Kelas',
+            'deskripsi' => 'Lapisan melamin papan tulis mengelupas dan sulit dibersihkan dengan penghapus standar.',
+            'status' => 'Selesai',
+        ]);
     }
 }
